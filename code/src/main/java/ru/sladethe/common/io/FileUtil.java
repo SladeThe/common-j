@@ -76,14 +76,14 @@ public final class FileUtil {
     public static byte[] getCriticalFileBytes(@Nonnull File file, @Nonnull File backupFile) throws IOException {
         byte[] subscribedFileBytes = getSubscribedFileBytes(file);
         if (subscribedFileBytes != null) {
-            FileUtils.forceDelete(backupFile);
+            FileUtils.deleteQuietly(backupFile);
             return subscribedFileBytes;
         }
 
         subscribedFileBytes = getSubscribedFileBytes(backupFile);
         if (subscribedFileBytes != null) {
             FileUtils.copyFile(backupFile, file);
-            FileUtils.forceDelete(backupFile);
+            FileUtils.deleteQuietly(backupFile);
             return subscribedFileBytes;
         }
 

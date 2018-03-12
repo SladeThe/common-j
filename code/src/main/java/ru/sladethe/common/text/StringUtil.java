@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static java.lang.StrictMath.max;
+import static java.lang.StrictMath.*;
 
 /**
  * @author Maxim Shipko (sladethe@gmail.com)
@@ -466,6 +466,151 @@ public final class StringUtil {
         } while (targetIndex != -1);
 
         return result.append(s.substring(i)).toString();
+    }
+
+    /**
+     * @param s         Given string.
+     * @param maxLength Maximal length.
+     * @return Makes string to contain no more than maxLength characters.
+     * If needed removes suffix and appends string with "...".
+     * Returns {@code null} iff {@code s} is {@code null}.
+     */
+    @Contract(value = "!null, _ -> !null", pure = true)
+    @Nullable
+    public static String cropTo(@Nullable String s, int maxLength) {
+        if (maxLength < 8) {
+            throw new IllegalArgumentException("Argument maxLength is expected to be at least 8.");
+        }
+
+        if (s == null || s.length() <= maxLength) {
+            return s;
+        } else {
+            return s.substring(0, maxLength - 3) + "...";
+        }
+    }
+
+    /**
+     * @param s         Given string.
+     * @param maxLength Maximal length.
+     * @return Makes string to contain no more than maxLength characters.
+     * Removes middle part and inserts "..." instead of it if needed.
+     * Returns {@code null} iff {@code s} is {@code null}.
+     */
+    @Contract(value = "!null, _ -> !null", pure = true)
+    @Nullable
+    public static String shrinkTo(@Nullable String s, int maxLength) {
+        if (maxLength < 8) {
+            throw new IllegalArgumentException("Argument maxLength is expected to be at least 8.");
+        }
+
+        if (s == null || s.length() <= maxLength) {
+            return s;
+        } else {
+            int prefixLength = maxLength / 2;
+            int suffixLength = maxLength - prefixLength - 3;
+            return s.substring(0, prefixLength) + "..." + s.substring(s.length() - suffixLength);
+        }
+    }
+
+    @SuppressWarnings("Convert2streamapi")
+    @Nullable
+    public static List<String> shrinkLinesTo(List<String> lines, int maxLineLength, int maxLineCount) {
+        if (maxLineCount < 3) {
+            throw new IllegalArgumentException("Argument 'maxLineCount' is expected to be at least 3.");
+        }
+
+        if (lines == null) {
+            return null;
+        }
+
+        int lineCount = lines.size();
+        List<String> result = new ArrayList<>(min(maxLineCount, lineCount));
+
+        if (lineCount <= maxLineCount) {
+            for (String line : lines) {
+                result.add(shrinkTo(line, maxLineLength));
+            }
+        } else {
+            int prefixLineCount = maxLineCount / 2;
+            int postfixLineCount = maxLineCount - prefixLineCount - 1;
+
+            for (int lineIndex = 0; lineIndex < prefixLineCount; ++lineIndex) {
+                result.add(shrinkTo(lines.get(lineIndex), maxLineLength));
+            }
+
+            result.add("...");
+
+            for (int lineIndex = lineCount - postfixLineCount; lineIndex < lineCount; ++lineIndex) {
+                result.add(shrinkTo(lines.get(lineIndex), maxLineLength));
+            }
+        }
+
+        return result;
+    }
+
+    @Contract("!null, _, _ -> !null")
+    @Nullable
+    public static String[] shrinkLinesTo(String[] lines, int maxLineLength, int maxLineCount) {
+        if (maxLineCount < 3) {
+            throw new IllegalArgumentException("Argument 'maxLineCount' is expected to be at least 3.");
+        }
+
+        if (lines == null) {
+            return null;
+        }
+
+        int lineCount = lines.length;
+        String[] result = new String[min(maxLineCount, lineCount)];
+
+        if (lineCount <= maxLineCount) {
+            for (int lineIndex = 0; lineIndex < lineCount; ++lineIndex) {
+                result[lineIndex] = shrinkTo(lines[lineIndex], maxLineLength);
+            }
+        } else {
+            int prefixLineCount = maxLineCount / 2;
+            int postfixLineCount = maxLineCount - prefixLineCount - 1;
+
+            for (int lineIndex = 0; lineIndex < prefixLineCount; ++lineIndex) {
+                result[lineIndex] = shrinkTo(lines[lineIndex], maxLineLength);
+            }
+
+            int resultPosition = prefixLineCount;
+            result[resultPosition] = "...";
+
+            for (int lineIndex = lineCount - postfixLineCount; lineIndex < lineCount; ++lineIndex) {
+                result[++resultPosition] = shrinkTo(lines[lineIndex], maxLineLength);
+            }
+        }
+
+        return result;
+    }
+
+    public static String cropLines(String input, int maxLineLength, int maxLineNumber) {
+        if (isEmpty(input)) {
+            return input;
+        }
+
+        String[] lines = Patterns.LINE_BREAK_PATTERN.split(input);
+        StringBuilder result = new StringBuilder((maxLineLength + 5) * maxLineNumber + 5);
+
+        for (int i = 0; i < maxLineNumber && i < lines.length; ++i) {
+            String line = lines[i];
+
+            String croppedLine;
+            if (line.length() > maxLineLength) {
+                croppedLine = line.substring(0, maxLineLength) + "...";
+            } else {
+                croppedLine = line;
+            }
+
+            result.append(croppedLine).append("\r\n");
+        }
+
+        if (lines.length > maxLineNumber) {
+            result.append("...\r\n");
+        }
+
+        return result.toString();
     }
 
     /**
