@@ -115,7 +115,7 @@ public final class FileUtil {
         }
 
         writeSubscribedFile(file, bytes);
-        FileUtils.forceDelete(backupFile);
+        FileUtils.deleteQuietly(backupFile);
     }
 
     @Contract("null, _ -> fail; _, null -> fail")
