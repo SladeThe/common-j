@@ -1,6 +1,10 @@
 SladeThe's Java common code
 ==================
 
+This library honours the [semantic versioning](https://semver.org/spec/v2.0.0.html) rules except snapshot versions.
+
+#### Quick usage guide ####
+
 Add dependency description to Maven's pom.xml:
 
 ~~~~~
@@ -21,7 +25,7 @@ Add repository reference to Maven's pom.xml:
 <repositories>
     ...
     <repository>
-        <id>codeforces-commons</id>
+        <id>sladethe-common-j</id>
         <url>https://github.com/SladeThe/common-j/raw/master/repo/maven/</url>
     </repository>
     ...
