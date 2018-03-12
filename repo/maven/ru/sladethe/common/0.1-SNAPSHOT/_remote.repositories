@@ -1,0 +1,6 @@
+#NOTE: This is an Aether internal implementation file, its format can be changed without prior notice.
+#Mon Mar 12 12:23:37 GMT+04:00 2018
+common-0.1-SNAPSHOT.jar>=
+common-0.1-SNAPSHOT-sources.jar>=
+common-0.1-SNAPSHOT-javadoc.jar>=
+common-0.1-SNAPSHOT.pom>=

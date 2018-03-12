@@ -9,7 +9,7 @@ Add dependency description to Maven's pom.xml:
     <dependency>
         <groupId>ru.sladethe</groupId>
         <artifactId>common</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1</version>
     </dependency>
     ...
 </dependencies>
