@@ -13,7 +13,7 @@ Add dependency description to Maven's pom.xml:
     <dependency>
         <groupId>ru.sladethe</groupId>
         <artifactId>common</artifactId>
-        <version>0.1.1</version>
+        <version>0.2.0</version>
     </dependency>
     ...
 </dependencies>
